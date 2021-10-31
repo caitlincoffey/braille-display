@@ -42,6 +42,13 @@ class textReader:
                 print("Error: could not read char %s" % char)
                 # TODO this is picking up new lines, should those be written in as just spaces?
 
+    def send_to_arduino(self, mapping):
+        """
+        text
+        """
+        pass
+        
+
 
 if __name__ == "__main__":
     test_reader = textReader('test.txt')
