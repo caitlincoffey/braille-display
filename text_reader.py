@@ -74,6 +74,10 @@ class textReader:
                 # TODO this is picking up new lines, should those be written in as just spaces?
 
 
+    def send_to_arduino(self, mapping):
+        for item in mapping:
+            pass
+
 if __name__ == "__main__":
     test_reader = textReader('test.txt')
     time.sleep(2)
