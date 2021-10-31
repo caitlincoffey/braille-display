@@ -15,20 +15,28 @@ class textReader:
         text
         """
         with open(self.txt_file, 'r') as f:
-            text = f.read().lower() # reads the whole file, does not read by line. will result in one giant string. also converts chars to lowercase.
+            text = f.read() # reads the whole file, does not read by line. will result in one giant string. also converts chars to lowercase.
 
         for char in text: 
+            if char.isupper(): # if character is uppercase
+                #TODO deal with all caps edge case, if whole word is caps it's two dots
+                mapping = conversions.mappings_alpha_num['cap']
+
+            if char.isnumeric(): # if character is a number
+                mapping = conversions.mappings_alpha_num['num']
+
             # we can do braille conversions here
-            if char in conversions.mappings_punct:
-                mapping = conversions.mappings_punct[char]
+            if char.lower() in conversions.mappings_punct:
+                mapping = conversions.mappings_punct[char.lower()]
                 # send things to arduino...
 
-            elif char in conversions.mappings_alpha_num:
-                mapping = conversions.mappings_alpha_num[char]
+            elif char.lower() in conversions.mappings_alpha_num:
+                mapping = conversions.mappings_alpha_num[char.lower()]
                 # send things to arduino...
 
-            elif char in conversions.mappings_punct2:
-                mapping = conversions.mapping_punct2[char]
+            elif char.lower() in conversions.mappings_punct2:
+                # this will take up two cells, TODO
+                mapping = conversions.mapping_punct2[char.lower()]
                 # send things to arduino...
             else:
                 print("Error: could not read char %s" % char)
