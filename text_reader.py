@@ -16,7 +16,9 @@ class textReader:
         text
         """
         self.txt_file = txt_file # contains txt file name and path
-
+        with open(self.txt_file, 'r') as f:
+            self.text = f.read() # reads the whole file, does not read by line. will result in one giant string. also converts chars to lowercase.
+        self.all_maps = []
         # Taken from example code provided by PIE Teaching Team
         # https://github.com/bminch/PIE/blob/main/Serial_cmd.py
         if port == '':
@@ -45,14 +47,15 @@ class textReader:
         """
         text
         """
-        with open(self.txt_file, 'r') as f:
-            text = f.read() # reads the whole file, does not read by line. will result in one giant string. also converts chars to lowercase.
+        # with open(self.txt_file, 'r') as f:
+        #     text = f.read() # reads the whole file, does not read by line. will result in one giant string. also converts chars to lowercase.
 
-        for char in text: 
+        for char in self.text: 
+            #bad way for now, add all mappings to a list. TODO make better way to read --> send
             if char.isupper(): # if character is uppercase
                 #TODO deal with all caps edge case, if whole word is caps it's two dots
                 mapping = conversions.mappings_alpha_num['cap']
-
+                
             if char.isnumeric(): # if character is a number
                 mapping = conversions.mappings_alpha_num['num']
 
@@ -72,13 +75,21 @@ class textReader:
             else:
                 print("Error: could not read char %s" % char)
                 # TODO this is picking up new lines, should those be written in as just spaces?
+            
+            self.all_maps.append(mapping)
 
-
-    def send_to_arduino(self, mapping):
-        for item in mapping:
-            pass
+    def send_to_arduino(self, mapping, ind):
+        cmd = "".join((conversions.b_to_ard[mapping[ind][0]], conversions.b_to_ard[mapping[ind][1]], conversions.b_to_ard[mapping[ind][2]])).encode()
+        self.dev.write(cmd)
 
 if __name__ == "__main__":
     test_reader = textReader('test.txt')
     time.sleep(2)
+    #char1 = test_reader.read()
     test_reader.read()
+    letter1 = test_reader.send_to_arduino(test_reader.all_maps, 0)
+    #print(letter1)
+    #textReader.send_to_arduino(letter1)
+    #print(test_reader.all_maps[0])
+    #print(test_reader.send_to_arduino(test_reader.all_maps, 0))
+    #print(char1)

@@ -14,6 +14,13 @@ Servo cam3;
 // Defining pins 
 const int button = A0; // Pin for button 
 
+//Defining cam positions
+//TODO make these actual servo positions
+int A = 0; //0 0
+int B = 50; //1 1
+int C = 100; //0 1
+int D = 150; //1 0
+
 void setup() {
   // put your setup code here, to run once:
   // setting up servos
@@ -28,12 +35,18 @@ void loop() {
   // put your main code here, to run repeatedly:
   if (Serial.available() > 0) {
     // read the incoming byte:
-    incomingByte = Serial.read();
-
-    // say what you got:
-    Serial.print("I received: ");
-    Serial.println(incomingByte, DEC);
-  }
+    String cmd = Serial.readString();
+    Serial.println(cmd);
+    Serial.println(cmd.charAt(0));
+    cam1.write(cmd.charAt(0));
+    cam2.write(cmd.charAt(1));
+    cam3.write(cmd.charAt(2));
+//    incomingByte = Serial.read();
+//
+//    // say what you got:
+//    Serial.print("I received: ");
+//    Serial.println(incomingByte, DEC);
+//  }
 //  if (Serial.available()) {
 //      // ewwww this int conversion 
 //      String a = Serial.readString();
@@ -41,4 +54,5 @@ void loop() {
 //      Serial.println(a);
 //      int b = a.toInt();
 //  }
+  }
 }
