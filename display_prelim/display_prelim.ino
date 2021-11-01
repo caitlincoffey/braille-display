@@ -26,8 +26,11 @@ void setup() {
   // setting up servos
   cam1.attach(9);  // listens to pin 9
   cam2.attach(10);  // listens to pin 10
-  cam2.attach(11);  // listens to pin 11
-  Serial.begin(115200);
+  cam3.attach(11);  // listens to pin 11
+  cam1.write(0);
+  cam2.write(0);
+  cam3.write(0);
+  Serial.begin(57600);
 
 }
 
