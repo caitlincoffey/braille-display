@@ -87,7 +87,18 @@ if __name__ == "__main__":
     time.sleep(2)
     #char1 = test_reader.read()
     test_reader.read()
-    letter1 = test_reader.send_to_arduino(test_reader.all_maps, 5)
+    letter1 = test_reader.send_to_arduino(test_reader.all_maps, 0)
+    for ind in range(len(test_reader.all_maps)):
+        while True:
+            print("In While loop")
+            if (test_reader.dev.inWaiting() > 0):
+                print("In first if")
+                print(test_reader.dev.readline())
+                if (test_reader.dev.readline() == "1"):
+                    test_reader.send_to_arduino(test_reader.all_maps, ind)
+                    print("GOT A 1!!!")
+                    break
+
     #print(letter1)
     #textReader.send_to_arduino(letter1)
     #print(test_reader.all_maps[0])
