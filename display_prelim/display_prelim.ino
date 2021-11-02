@@ -16,21 +16,22 @@ const int button = A0; // Pin for button
 
 //Defining cam positions
 //TODO make these actual servo positions
-int A = 0; //0 0
-int B = 50; //1 1
-int C = 100; //0 1
-int D = 150; //1 0
+int A = 145; //0 0, 165 is start (right most) and 120 is end (left most)
+int B = 180; //1 1
+int C = 175; //0 1
+int D = 110; //1 0
 
 void setup() {
   // put your setup code here, to run once:
   // setting up servos
-  cam1.attach(9);  // listens to pin 9
+  cam1.attach(6);  // listens to pin 9
   cam2.attach(10);  // listens to pin 10
   cam3.attach(11);  // listens to pin 11
-  cam1.write(0);
-  cam2.write(0);
-  cam3.write(0);
-  Serial.begin(57600);
+  cam1.write(A);
+  cam2.write(A);
+  cam3.write(A);
+//  Serial.begin(57600);
+  Serial.begin(115200);
 
 }
 
@@ -60,6 +61,6 @@ void loop() {
 //      Serial.print("Received Value: ");
 //      Serial.println(a);
 //      int b = a.toInt();
-//  }
+////  }
   }
 }
