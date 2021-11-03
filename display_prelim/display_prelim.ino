@@ -59,7 +59,9 @@ void loop() {
 //  }
 
   recvWithStartEndMarkers();
+  Serial.println("We are here!");
   replyToPython();
+  Serial.println("We are now here!");
 }
 
 //following adapted from: https://forum.arduino.cc/t/pc-arduino-comms-using-python-updated/574496
@@ -96,8 +98,8 @@ void recvWithStartEndMarkers() {
 
 void replyToPython() {
   if (newData == true) {
-    Serial.print("Just received ");
-    Serial.println(receivedChars);
+    //Serial.print("Just received ");
+    //Serial.println(receivedChars);
     newData = false;
     cam1.write(receivedChars[0]);
   }

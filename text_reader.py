@@ -68,7 +68,6 @@ class textReader:
             # we can do braille conversions here
             if char.lower() in conversions.mappings_punct:
                 mapping = conversions.mappings_punct[char.lower()]
-            # send things to arduino...
 
             elif char.lower() in conversions.mappings_alpha_num:
                 mapping = conversions.mappings_alpha_num[char.lower()]
@@ -91,13 +90,15 @@ class textReader:
         cmd = "".join((conversions.b_to_ard[mapping[ind][0]], conversions.b_to_ard[mapping[ind][1]], conversions.b_to_ard[mapping[ind][2]])).encode()
         #self.dev.write(cmd)
         stringWithMarkers = (startMarker)
+        cmd = str(cmd, 'UTF-8')
+        print(cmd)
         stringWithMarkers += cmd
         stringWithMarkers += (endMarker)
         self.dev.write(stringWithMarkers.encode('utf-8'))
     
     def recvFromArduino(self):
         global startMarker, endMarker, dataStarted, dataBuf, messageComplete
-
+        print(self.dev.inWaiting())
         if self.dev.inWaiting() > 0 and messageComplete == False:
             x = self.dev.read().decode("utf-8")
             if dataStarted == True:
@@ -118,10 +119,12 @@ if __name__ == "__main__":
     time.sleep(2)
     #char1 = test_reader.read()
     test_reader.read()
+    # test
     letter1 = test_reader.send_to_arduino(test_reader.all_maps, 0)
     for ind in range(1, len(test_reader.all_maps)):
         while True:
             arduinoReply = test_reader.recvFromArduino()
+            #print(arduinoReply)
             if arduinoReply == "1" or arduinoReply == 1:
                 test_reader.send_to_arduino(test_reader.all_maps, ind)
                 print("SENT NEW THING")
