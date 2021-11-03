@@ -6,6 +6,12 @@ import serial
 import serial.tools.list_ports as list_ports
 import time
 
+startMarker = '<'
+endMarker = '>'
+dataStarted = False
+dataBuf = ""
+messageComplete = False
+
 class textReader:
     Arduino_IDs = ((0x2341, 0x0043), (0x2341, 0x0001), 
                    (0x2A03, 0x0043), (0x2341, 0x0243), 
@@ -37,7 +43,7 @@ class textReader:
                     break
         else:
             try:
-                self.dev = serial.Serial(port, 115200)
+                self.dev = serial.Serial(port, 57600)
                 self.connected = True
             except:
                 self.edev = None
@@ -79,8 +85,33 @@ class textReader:
             self.all_maps.append(mapping)
 
     def send_to_arduino(self, mapping, ind):
+
+        global startMarker, endMarker
+
         cmd = "".join((conversions.b_to_ard[mapping[ind][0]], conversions.b_to_ard[mapping[ind][1]], conversions.b_to_ard[mapping[ind][2]])).encode()
-        self.dev.write(cmd)
+        #self.dev.write(cmd)
+        stringWithMarkers = (startMarker)
+        stringWithMarkers += cmd
+        stringWithMarkers += (endMarker)
+        self.dev.write(stringWithMarkers.encode('utf-8'))
+    
+    def recvFromArduino(self):
+        global startMarker, endMarker, dataStarted, dataBuf, messageComplete
+
+        if self.dev.inWaiting() > 0 and messageComplete == False:
+            x = self.dev.read().decode("utf-8")
+            if dataStarted == True:
+                if x != endMarker:
+                    dataBuf = dataBuf + x
+                else:
+                    dataStarted = False
+                    messageComplete = True
+        
+        if (messageComplete == True):
+            messageComplete = False
+            return dataBuf
+        else:
+            return "XXX"
 
 if __name__ == "__main__":
     test_reader = textReader('test.txt')
@@ -88,19 +119,20 @@ if __name__ == "__main__":
     #char1 = test_reader.read()
     test_reader.read()
     letter1 = test_reader.send_to_arduino(test_reader.all_maps, 0)
-    for ind in range(len(test_reader.all_maps)):
+    for ind in range(1, len(test_reader.all_maps)):
         while True:
-            print("In While loop")
-            if (test_reader.dev.inWaiting() > 0):
-                print("In first if")
-                print(test_reader.dev.readline())
-                if (test_reader.dev.readline() == "1"):
-                    test_reader.send_to_arduino(test_reader.all_maps, ind)
-                    print("GOT A 1!!!")
-                    break
+            arduinoReply = test_reader.recvFromArduino()
+            if arduinoReply == "1" or arduinoReply == 1:
+                test_reader.send_to_arduino(test_reader.all_maps, ind)
+                print("SENT NEW THING")
+    # for ind in range(len(test_reader.all_maps)):
+    #     while True:
+    #         print("In While loop")
+    #         if (test_reader.dev.inWaiting() > 0):
+    #             print("In first if")
+    #             print(test_reader.dev.readline())
+    #             if (test_reader.dev.readline() == "1"):
+    #                 test_reader.send_to_arduino(test_reader.all_maps, ind)
+    #                 print("GOT A 1!!!")
+    #                 break
 
-    #print(letter1)
-    #textReader.send_to_arduino(letter1)
-    #print(test_reader.all_maps[0])
-    #print(test_reader.send_to_arduino(test_reader.all_maps, 0))
-    #print(char1)
