@@ -90,7 +90,7 @@ class textReader:
         cmd = "".join((conversions.b_to_ard[mapping[ind][0]], conversions.b_to_ard[mapping[ind][1]], conversions.b_to_ard[mapping[ind][2]])).encode()
         #self.dev.write(cmd)
         stringWithMarkers = (startMarker)
-        cmd = str(cmd, 'UTF-8')
+        cmd = cmd.decode()
         print(cmd)
         stringWithMarkers += cmd
         stringWithMarkers += (endMarker)
