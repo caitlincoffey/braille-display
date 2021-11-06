@@ -135,13 +135,18 @@ if __name__ == "__main__":
         #print("We got here")
         test_reader.send_to_arduino(test_reader.all_maps, ind) # send it to arduino
         print("Sent to arduino")
-        while True:
-            print("in while loop")
-            var = test_reader.recvFromArduino()
-            print(var)
-            if var == var: # TODO FIX 1? "1"?
-                break # listen to arduino
-        print("Ready to send new message")
+        while "1" not in test_reader.recvFromArduino():
+        #while test_reader.recvFromArduino() != "1\n":
+            pass
+        
+        # while True:
+        #     print("in while loop")
+        #     var = test_reader.recvFromArduino()
+        #     print(var)
+        #     print(type(var))
+        #     if var == "1\n": # TODO FIX 1? "1"?
+        #         break # listen to arduino
+        # print("Ready to send new message")
     #     print(test_reader.all_maps[ind])
     #     while True:
     #         #arduinoReply = test_reader.recvFromArduino()
