@@ -35,7 +35,7 @@ class textReader:
             for device in devices:
                 if (device.vid, device.pid) in textReader.Arduino_IDs:
                     try:
-                        self.dev = serial.Serial(device.device, 57600)
+                        self.dev = serial.Serial(device.device, 115200)
                         self.connected = True
                         print('Connected to {!s}...'.format(device.device))
                     except:
@@ -44,7 +44,7 @@ class textReader:
                     break
         else:
             try:
-                self.dev = serial.Serial(port, 57600)
+                self.dev = serial.Serial(port, 115200)
                 self.connected = True
             except:
                 self.edev = None
@@ -129,8 +129,8 @@ if __name__ == "__main__":
     test_reader.read()
 
     # Sending data to arduino
-    letter1 = test_reader.send_to_arduino(test_reader.all_maps, 0)
-    for ind in range(1, len(test_reader.all_maps)):
+    #letter1 = test_reader.send_to_arduino(test_reader.all_maps, 0)
+    for ind in range(0, len(test_reader.all_maps)):
         #time.sleep(1)
         #print("We got here")
         test_reader.send_to_arduino(test_reader.all_maps, ind) # send it to arduino

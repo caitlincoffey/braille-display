@@ -30,8 +30,8 @@ boolean newData = false;
 void setup() {
   // put your setup code here, to run once:
   // setting up servos
-  Serial.begin(57600);
-  //Serial.begin(115200);
+  //Serial.begin(57600);
+  Serial.begin(115200);
 
   cam1.attach(6);  // listens to pin 9
   cam2.attach(10);  // listens to pin 10
