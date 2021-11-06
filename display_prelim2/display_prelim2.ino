@@ -39,8 +39,8 @@ void setup() {
   cam2.write(A);
   cam3.write(A);
 
-  Serial.println("<Arduino is ready>");
-  delay(6000); // six second delay for python
+  //Serial.println("<Arduino is ready>");
+  //delay(6000); // six second delay for python
 }
 
 void loop() {
@@ -59,15 +59,17 @@ void loop() {
 //    Serial.write(1);
 //  }
 
-  cam1.write(A);
-  cam1.write(B);
 //  String val;
 //  while (Serial.available() > 0) {
 //    val = val + (char)Serial.read(); // read data byte by byte and store it
 //  }
 //  Serial.print(val); // send the received data back to raspberry pi
-
+  
   recvWithStartEndMarkers();
+  cam1.write(receivedChars[1]);
+  cam2.write(receivedChars[1]);
+  cam3.write(receivedChars[2]);
+  delay(2000);
   replyToPython();
 }
 
@@ -105,9 +107,7 @@ void recvWithStartEndMarkers() {
 
 void replyToPython() {
   if (newData == true) {
-    Serial.print("Just received ");
-    Serial.println(receivedChars);
+    Serial.println("1");
     newData = false;
-    cam1.write(receivedChars[0]);
   }
 }

@@ -99,7 +99,7 @@ class textReader:
 
         msg = self.dev.read_until() # read until a new line
         #mystring = msg.decode()  # decode n return 
-        return msg
+        return msg.decode()
 
         print("in waiting", self.dev.inWaiting())
         if self.dev.inWaiting() > 0 and messageComplete == False:
@@ -131,13 +131,17 @@ if __name__ == "__main__":
     # Sending data to arduino
     letter1 = test_reader.send_to_arduino(test_reader.all_maps, 0)
     for ind in range(1, len(test_reader.all_maps)):
-        time.sleep(1)
-        print("We got here")
+        #time.sleep(1)
+        #print("We got here")
         test_reader.send_to_arduino(test_reader.all_maps, ind) # send it to arduino
         print("Sent to arduino")
-        var = test_reader.recvFromArduino() # listen to arduino
-        print("This is what we got back from the Arduino!", var) #print what arduino sent
-
+        while True:
+            print("in while loop")
+            var = test_reader.recvFromArduino()
+            print(var)
+            if var == var: # TODO FIX 1? "1"?
+                break # listen to arduino
+        print("Ready to send new message")
     #     print(test_reader.all_maps[ind])
     #     while True:
     #         #arduinoReply = test_reader.recvFromArduino()
