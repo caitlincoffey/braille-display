@@ -5,6 +5,7 @@ import letterToDots as conversions
 import serial
 import serial.tools.list_ports as list_ports
 import time
+#import binascii
 
 startMarker = '<'
 endMarker = '>'
@@ -51,10 +52,8 @@ class textReader:
 
     def read(self):
         """
-        text
+        Reads text and converts text to braille
         """
-        # with open(self.txt_file, 'r') as f:
-        #     text = f.read() # reads the whole file, does not read by line. will result in one giant string. also converts chars to lowercase.
 
         for char in self.text: 
             #bad way for now, add all mappings to a list. TODO make better way to read --> send
@@ -88,54 +87,77 @@ class textReader:
         global startMarker, endMarker
 
         cmd = "".join((conversions.b_to_ard[mapping[ind][0]], conversions.b_to_ard[mapping[ind][1]], conversions.b_to_ard[mapping[ind][2]])).encode()
-        #self.dev.write(cmd)
         stringWithMarkers = (startMarker)
-        cmd = cmd.decode()
-        print(cmd)
+        cmd = cmd.decode("utf-8")
         stringWithMarkers += cmd
         stringWithMarkers += (endMarker)
+        print("sending: ", stringWithMarkers.encode('utf-8'))
         self.dev.write(stringWithMarkers.encode('utf-8'))
     
     def recvFromArduino(self):
         global startMarker, endMarker, dataStarted, dataBuf, messageComplete
-        print(self.dev.inWaiting())
+
+        msg = self.dev.read_until() # read until a new line
+        #mystring = msg.decode()  # decode n return 
+        return msg
+
+        print("in waiting", self.dev.inWaiting())
         if self.dev.inWaiting() > 0 and messageComplete == False:
-            x = self.dev.read().decode("utf-8")
-            if dataStarted == True:
-                if x != endMarker:
-                    dataBuf = dataBuf + x
-                else:
-                    dataStarted = False
-                    messageComplete = True
+            x = self.dev.read()
+            # x = str(x).replace('\\', '').replace("'", '').replace("bx", '')
+            # print(x.encode("utf-8"))
+            print('we made it!')
+            #x = self.dev.read().decode()
+            #if dataStarted == True:
+                # if x != endMarker:
+                #     dataBuf = dataBuf + x
+                # else:
+            dataStarted = False
+            messageComplete = True
         
         if (messageComplete == True):
             messageComplete = False
             return dataBuf
-        else:
-            return "XXX"
+        #else:
+            #return "XXX"
+
 
 if __name__ == "__main__":
     test_reader = textReader('test.txt')
     time.sleep(2)
-    #char1 = test_reader.read()
+    # reading text and converting to braille
     test_reader.read()
-    # test
+
+    # Sending data to arduino
     letter1 = test_reader.send_to_arduino(test_reader.all_maps, 0)
     for ind in range(1, len(test_reader.all_maps)):
-        while True:
-            arduinoReply = test_reader.recvFromArduino()
-            #print(arduinoReply)
-            if arduinoReply == "1" or arduinoReply == 1:
-                test_reader.send_to_arduino(test_reader.all_maps, ind)
-                print("SENT NEW THING")
-    # for ind in range(len(test_reader.all_maps)):
+        time.sleep(1)
+        print("We got here")
+        test_reader.send_to_arduino(test_reader.all_maps, ind) # send it to arduino
+        print("Sent to arduino")
+        var = test_reader.recvFromArduino() # listen to arduino
+        print("This is what we got back from the Arduino!", var) #print what arduino sent
+
+    #     print(test_reader.all_maps[ind])
     #     while True:
-    #         print("In While loop")
-    #         if (test_reader.dev.inWaiting() > 0):
-    #             print("In first if")
-    #             print(test_reader.dev.readline())
-    #             if (test_reader.dev.readline() == "1"):
-    #                 test_reader.send_to_arduino(test_reader.all_maps, ind)
-    #                 print("GOT A 1!!!")
-    #                 break
+    #         #arduinoReply = test_reader.recvFromArduino()
+    #         arduinoReply = 1
+    #         #print("returning:", arduinoReply)
+    #         if arduinoReply == "1" or arduinoReply == 1:
+    #             time.sleep(2)
+    #             test_reader.send_to_arduino(test_reader.all_maps, ind)
+    #             print("SENT NEW THING")
+    #             break # break out of while loop
+
+
+    # # for ind in range(len(test_reader.all_maps)):
+    # #     while True:
+    # #         print("In While loop")
+    # #         if (test_reader.dev.inWaiting() > 0):
+    # #             print("In first if")
+    # #             print(test_reader.dev.readline())
+    # #             if (test_reader.dev.readline() == "1"):
+    # #                 test_reader.send_to_arduino(test_reader.all_maps, ind)
+    # #                 print("GOT A 1!!!")
+    # #                 break
 

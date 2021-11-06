@@ -29,8 +29,8 @@ boolean newData = false;
 void setup() {
   // put your setup code here, to run once:
   // setting up servos
-    //Serial.begin(57600);
-  Serial.begin(115200);
+  Serial.begin(57600);
+  //Serial.begin(115200);
 
   cam1.attach(6);  // listens to pin 9
   cam2.attach(10);  // listens to pin 10
@@ -59,14 +59,16 @@ void loop() {
 //    Serial.write(1);
 //  }
 
-  String val;
+  cam1.write(A);
+  cam1.write(B);
+//  String val;
 //  while (Serial.available() > 0) {
 //    val = val + (char)Serial.read(); // read data byte by byte and store it
 //  }
-  Serial.print(val); // send the received data back to raspberry pi
+//  Serial.print(val); // send the received data back to raspberry pi
 
-  //recvWithStartEndMarkers();
-//  replyToPython();
+  recvWithStartEndMarkers();
+  replyToPython();
 }
 
 //following adapted from: https://forum.arduino.cc/t/pc-arduino-comms-using-python-updated/574496
@@ -79,7 +81,6 @@ void recvWithStartEndMarkers() {
 
   while (Serial.available() > 0 && newData == false) {
     rc = Serial.read();
-    Serial.print("Received this!");Serial.println(rc);
 
     if (recvInProgress == true) {
       if (rc != endMarker) {
