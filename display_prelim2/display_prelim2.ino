@@ -1,10 +1,13 @@
 // Preliminary Arduino Driver file for Refreshable Braille Display
 #include <Adafruit_MotorShield.h>
 #include <Servo.h>
+//#include <Stepper.h>
+#include <Wire.h>
 
 // Define motorshield
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-// TODO add stepper motor
+Adafruit_StepperMotor *beltMotor = AFMS.getStepper(200, 2);
+//Stepper myStepper(200, 11, 9, 10, 8);
 
 // Defining servos
 Servo cam1;  // TODO change name
@@ -32,7 +35,7 @@ void setup() {
   // setting up servos
   //Serial.begin(57600);
   Serial.begin(115200);
-
+  beltMotor->setSpeed(200);
   cam1.attach(6);  // listens to pin 9
   cam2.attach(10);  // listens to pin 10
   cam3.attach(11);  // listens to pin 11
@@ -45,6 +48,7 @@ void setup() {
 }
 
 void loop() {
+  beltMotor->step(100, FORWARD, SINGLE);
   // put your main code here, to run repeatedly:
 //  if (Serial.available() > 0) {
 //    // read the incoming byte:
