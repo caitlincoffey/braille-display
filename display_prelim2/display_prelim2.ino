@@ -3,7 +3,7 @@
 #include <Servo.h>
 //#include <Stepper.h>
 #include <Wire.h>
-#include "Adafruit_PWMServoDriver.h"
+//#include "Adafruit_PWMServoDriver.h"
 
 // Define motorshield
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
@@ -19,6 +19,15 @@ Servo cam3;
 
 // Defining pins 
 const int button = A0; // Pin for button 
+const int buttonPin = 0;     // the number of the pushbutton pin
+
+// Button state and debouncing
+bool braille2 = false;
+int buttonState = 0;
+uint32_t blinkTime;
+uint32_t debounce_time;
+bool SW1_went_back_low;
+const uint16_t DEBOUNCE_INTERVAL = 10;
 
 //Defining cam positions
 //TODO make these actual servo positions
@@ -42,36 +51,36 @@ void setup() {
   cam1.attach(6);  // listens to pin 9
   cam2.attach(10);  // listens to pin 10
   cam3.attach(11);  // listens to pin 11
-//  cam1.write(A);
-//  cam2.write(A);
-//  cam3.write(A);
 
+  pinMode(buttonPin, INPUT);
+  blinkTime = millis();
+  debounce_time = blinkTime;
+  SW1_went_back_low=true;
   //Serial.println("<Arduino is ready>");
   //delay(6000); // six second delay for python
 }
 
 void loop() {
+  uint32_t t;
+  bool SW1_high;
+  t = millis();
   beltMotor->step(100, FORWARD, SINGLE);
-  // put your main code here, to run repeatedly:
-//  if (Serial.available() > 0) {
-//    // read the incoming byte:
-//    String cmd = Serial.readString();
-//    Serial.println(cmd);
-//    cam1.write(cmd.charAt(0));
-//    cam2.write(cmd.charAt(1));
-//    cam3.write(cmd.charAt(2));
-//    while(Serial.available() > 0) {
-//      Serial.read();
-//    }
-//    delay(500);
-//    Serial.write(1);
-//  }
 
-//  String val;
-//  while (Serial.available() > 0) {
-//    val = val + (char)Serial.read(); // read data byte by byte and store it
-//  }
-//  Serial.print(val); // send the received data back to raspberry pi
+  if (t >= debounce_time + DEBOUNCE_INTERVAL) {
+    SW1_high = digitalRead(buttonPin) == HIGH;
+    
+    if (SW1_went_back_low && SW1_high) {
+      // Whatever we want when we press the button!
+      braille2 = !braille2;
+      Serial.println("swapped to braille2");
+      SW1_went_back_low = false;
+    }
+    
+    else if (!SW1_went_back_low && !SW1_high) {
+      SW1_went_back_low = true;
+    }
+    debounce_time = t;
+  }
   
   recvWithStartEndMarkers();
 
@@ -117,11 +126,6 @@ void loop() {
       cam3.write(110);
   }
   
-  //Serial.println(receivedChars[0]);
-  //cam1.write(receivedChars[0]);
-  //Serial.println(cam1.read());
-//  cam2.write(receivedChars[1]);
-//  cam3.write(receivedChars[2]);
   delay(2000);
   replyToPython();
 }
