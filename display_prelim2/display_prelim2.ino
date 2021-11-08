@@ -3,11 +3,14 @@
 #include <Servo.h>
 //#include <Stepper.h>
 #include <Wire.h>
+#include "Adafruit_PWMServoDriver.h"
 
 // Define motorshield
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_StepperMotor *beltMotor = AFMS.getStepper(200, 2);
 //Stepper myStepper(200, 11, 9, 10, 8);
+
+//#define STEPS 200;
 
 // Defining servos
 Servo cam1;  // TODO change name
