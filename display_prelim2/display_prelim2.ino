@@ -1,33 +1,19 @@
 // Preliminary Arduino Driver file for Refreshable Braille Display
-#include <Adafruit_MotorShield.h>
 #include <Servo.h>
-//#include <Stepper.h>
+#include <Stepper.h>
 #include <Wire.h>
-//#include "Adafruit_PWMServoDriver.h"
-
-// Define motorshield
-Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_StepperMotor *beltMotor = AFMS.getStepper(200, 2);
-//Stepper myStepper(200, 11, 9, 10, 8);
-
-//#define STEPS 200;
 
 // Defining servos
-Servo cam1;  // TODO change name
+Servo cam1;
 Servo cam2;
 Servo cam3;
 
-// Defining pins 
-const int button = A0; // Pin for button 
-const int buttonPin = 0;     // the number of the pushbutton pin
+// Defining stepper motor info
+const int stepsPerRevolution = 3200*4; // microstepping 1/16
+const int dirPin = 12;
+const int stepPin = 11;
+Stepper belt = Stepper(stepsPerRevolution, stepPin, dirPin);
 
-// Button state and debouncing
-bool braille2 = false;
-int buttonState = 0;
-uint32_t blinkTime;
-uint32_t debounce_time;
-bool SW1_went_back_low;
-const uint16_t DEBOUNCE_INTERVAL = 10;
 
 //Defining cam positions
 //TODO make these actual servo positions
@@ -44,44 +30,21 @@ boolean newData = false;
 
 void setup() {
   // put your setup code here, to run once:
-  // setting up servos
   //Serial.begin(57600);
   Serial.begin(115200);
-  beltMotor->setSpeed(200);
-  cam1.attach(6);  // listens to pin 9
-  cam2.attach(10);  // listens to pin 10
-  cam3.attach(11);  // listens to pin 11
 
-  pinMode(buttonPin, INPUT);
-  blinkTime = millis();
-  debounce_time = blinkTime;
-  SW1_went_back_low=true;
-  //Serial.println("<Arduino is ready>");
-  //delay(6000); // six second delay for python
+  // attaching servos
+  cam1.attach(3);  // listens to pin 9
+  cam2.attach(5);  // listens to pin 10
+  cam3.attach(6);  // listens to pin 11
+
+  // setting speed of stepper motor for belt
+  belt.setSpeed(100);
 }
 
 void loop() {
-  uint32_t t;
-  bool SW1_high;
-  t = millis();
-  beltMotor->step(100, FORWARD, SINGLE);
-
-  if (t >= debounce_time + DEBOUNCE_INTERVAL) {
-    SW1_high = digitalRead(buttonPin) == HIGH;
-    
-    if (SW1_went_back_low && SW1_high) {
-      // Whatever we want when we press the button!
-      braille2 = !braille2;
-      Serial.println("swapped to braille2");
-      SW1_went_back_low = false;
-    }
-    
-    else if (!SW1_went_back_low && !SW1_high) {
-      SW1_went_back_low = true;
-    }
-    debounce_time = t;
-  }
   
+  belt.step(stepsPerRevolution);
   recvWithStartEndMarkers();
 
   switch (receivedChars[0]) {
@@ -125,7 +88,6 @@ void loop() {
     case 'D':
       cam3.write(110);
   }
-  
   delay(2000);
   replyToPython();
 }
