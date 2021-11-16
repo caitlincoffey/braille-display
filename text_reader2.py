@@ -59,6 +59,7 @@ class textReader:
         if grade == 2:
             raw_maps = brl.translate(self.text)
             for list in raw_maps:
+                #TODO add blank cell as space
                 for char in list:
                     self.all_maps.append(self.char_to_tuple(char))
         else:
