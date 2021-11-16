@@ -58,10 +58,13 @@ class textReader:
 
         if grade == 2:
             raw_maps = brl.translate(self.text)
+            print(raw_maps)
             for list in raw_maps:
-                #TODO add blank cell as space
+                #add a space bc new word
+                self.all_maps.append([(0, 0), (0, 0), (0, 0)])
                 for char in list:
                     self.all_maps.append(self.char_to_tuple(char))
+            self.all_maps.pop(0)
         else:
             self.convert_grade1()
 
@@ -124,19 +127,19 @@ class textReader:
 
 if __name__ == "__main__":
     test_reader = textReader('test2.txt')
-    time.sleep(2)
+    #time.sleep(2)
     # reading text and converting to braille
     # TODO check if either braille 1 or braille 2 (from physical input on braille display)
     # if braille 1: use our code
     # if braille 2: use existing open source code
-    test_reader.convert()
-
-    # Sending data to arduino
-    #letter1 = test_reader.send_to_arduino(test_reader.all_maps, 0)
-    for ind in range(0, len(test_reader.all_maps)):
-        #time.sleep(1)
-        #print("We got here")
-        test_reader.send_to_arduino(test_reader.all_maps, ind) # send it to arduino
-        print("Sent to arduino")
-        while "1" not in test_reader.recvFromArduino():
-            pass
+    test_reader.convert(2)
+    print(test_reader.all_maps)
+    # # Sending data to arduino
+    # #letter1 = test_reader.send_to_arduino(test_reader.all_maps, 0)
+    # for ind in range(0, len(test_reader.all_maps)):
+    #     #time.sleep(1)
+    #     #print("We got here")
+    #     test_reader.send_to_arduino(test_reader.all_maps, ind) # send it to arduino
+    #     print("Sent to arduino")
+    #     while "1" not in test_reader.recvFromArduino():
+    #         pass
