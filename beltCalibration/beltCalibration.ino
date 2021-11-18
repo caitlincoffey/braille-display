@@ -15,7 +15,7 @@ void setup() {
   Serial.begin(115200);
   // put your setup code here, to run once:
   // setting speed of stepper motor for belt
-  belt.setSpeed(50);
+  belt.setSpeed(10);
 }
 
 void loop() {
@@ -24,7 +24,7 @@ void loop() {
     inKeyboard = Serial.read();
     switch (inKeyboard) { //determine appropiate function to run based on input
       case ' ': //continue looping
-        belt.step(100);
+        belt.step(-500);
         num_steps = num_steps + 100;
         Serial.print("We stepped "); Serial.print(num_steps); Serial.println(" times.");
         break;

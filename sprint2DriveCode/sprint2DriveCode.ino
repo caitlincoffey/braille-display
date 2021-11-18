@@ -5,6 +5,14 @@
 #include <Stepper.h>
 #include <Wire.h>
 
+// Defining button info
+const int buttonPin = 2;     // the number of the pushbutton pin
+const uint16_t DEBOUNCE_INTERVAL = 10;
+uint32_t debounce_time;
+bool SW1_went_back_low;
+int buttonState = 0;         // variable for reading the pushbutton status
+bool pause = false;
+
 // Defining servos
 Servo cam1;
 Servo cam2;
@@ -42,17 +50,45 @@ void setup() {
   cam3.attach(6);  // listens to pin 11
 
   // setting speed of stepper motor for belt
-  belt.setSpeed(50); //TODO determine speed
+  belt.setSpeed(10); //TODO determine speed
+
+  // Button info / timing
+//  timer = millis();
+//  debounce_time = timer;
+  SW1_went_back_low=true;
 }
 
 void loop() {
+  uint32_t t;
+  bool SW1_high;
+  t = millis();
+
+//if (t >= debounce_time + DEBOUNCE_INTERVAL) {
+//  SW1_high = digitalRead(buttonPin) == HIGH; 
+//  if (SW1_went_back_low && SW1_high) {
+//    // Whatever we want when we press the button!
+//    Serial.println("Button press");
+//    pause = !pause;
+//    SW1_went_back_low = false;
+//  }
+//    
+//  else if (!SW1_went_back_low && !SW1_high) {
+//    // TODO figure out if this is default case
+//    SW1_went_back_low = true;
+//  }
+//  debounce_time = t;
+//  }
+
+if (pause == false) {
+  // CODE THAT GOES BRRRR
   belt.step(stepsToCell); //move to next cell
   recvWithStartEndMarkers(); //receive next character
-
-  moveSerovs();
-  
-  delay(5000); //
+    
+  moveServos();
+      
+  delay(2000); // could be lower
   replyToPython();
+  }
 }
 
 void moveServos() {
