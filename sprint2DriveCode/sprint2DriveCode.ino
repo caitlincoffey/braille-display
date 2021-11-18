@@ -1,4 +1,6 @@
 // Preliminary Arduino Driver file for Refreshable Braille Display
+// Made for Sprint 2
+// Move to next cell, stop, activate, pause, repeat
 #include <Servo.h>
 #include <Stepper.h>
 #include <Wire.h>
@@ -17,7 +19,7 @@ Stepper belt = Stepper(stepsPerRevolution, stepPin, dirPin);
 
 
 //Defining cam positions
-//TODO make these actual servo positions
+//TODO Check and edit these
 int A = 145; //0 0, 165 is start (right most) and 120 is end (left most)
 int B = 180; //1 1
 int C = 175; //0 1
@@ -40,14 +42,21 @@ void setup() {
   cam3.attach(6);  // listens to pin 11
 
   // setting speed of stepper motor for belt
-  belt.setSpeed(100);
+  belt.setSpeed(50); //TODO determine speed
 }
 
 void loop() {
-  
-  belt.step(stepsPerRevolution);
-  recvWithStartEndMarkers();
+  belt.step(stepsToCell); //move to next cell
+  recvWithStartEndMarkers(); //receive next character
 
+  moveSerovs();
+  
+  delay(5000); //
+  replyToPython();
+}
+
+void moveServos() {
+    //move the servos
   switch (receivedChars[0]) {
     case 'A':
       cam1.write(145);
@@ -89,8 +98,6 @@ void loop() {
     case 'D':
       cam3.write(110);
   }
-  delay(2000);
-  replyToPython();
 }
 
 //following adapted from: https://forum.arduino.cc/t/pc-arduino-comms-using-python-updated/574496
