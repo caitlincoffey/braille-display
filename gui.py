@@ -13,7 +13,24 @@ root.geometry("1000x800")
 
 def uploadFile(event=None):
     filename = filedialog.askopenfilename() 
+    with open(filename, 'r') as f:
+        text = f.read() # reads the whole file, does not read by line. will result in one giant string. also converts chars to lowercase.
+        print(text)
+        reader = txt.textReader(text)
+        time.sleep(2)
+        reader.convert(2)
+        print(reader.all_maps)
+
+    for ind in range(0, len(reader.all_maps)):
+        print("In %s character of loop" % str(ind))
+
+        reader.send_to_arduino(reader.all_maps, ind) # send it to arduino
+        print("Sent to arduino")
+        while "1" not in reader.recvFromArduino():
+            pass
     print("File selected:", filename)
+    print("All sent to Arduino")
+    return text
 
 def sendText(content):
     print("This is the content: %s" % content)

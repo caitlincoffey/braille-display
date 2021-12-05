@@ -124,7 +124,7 @@ class textReader:
 
 if __name__ == "__main__":
     test_reader = textReader('Testing 123')
-    #time.sleep(2)
+    time.sleep(2)
     
     # reading text and converting to braille
     # TODO check if either braille 1 or braille 2 (from physical input on braille display)

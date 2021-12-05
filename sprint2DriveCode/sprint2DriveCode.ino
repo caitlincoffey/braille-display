@@ -5,13 +5,18 @@
 #include <Stepper.h>
 #include <Wire.h>
 
-// Defining button info
+// Defining play/pause button info
 const int buttonPin = 2;     // the number of the pushbutton pin
 const uint16_t DEBOUNCE_INTERVAL = 10;
 uint32_t debounce_time;
 bool SW1_went_back_low;
 int buttonState = 0;         // variable for reading the pushbutton status
 bool pause = false;
+
+// Braille 1/2 switch
+const int switchPin = A0;
+int switchBraille1 = 0;
+bool braille1 = true;
 
 // Defining servos
 Servo cam1;
@@ -28,7 +33,7 @@ Stepper belt = Stepper(stepsPerRevolution, stepPin, dirPin);
 
 //Defining cam positions
 //TODO Check and edit these
-int A = 145; //0 0, 165 is start (right most) and 120 is end (left most)
+int A = 90; //0 0, 165 is start (right most) and 120 is end (left most)
 int B = 180; //1 1
 int C = 175; //0 1
 int D = 110; //1 0
@@ -56,13 +61,22 @@ void setup() {
 //  timer = millis();
 //  debounce_time = timer;
   SW1_went_back_low=true;
+
+  // Braille 1 vs. Braille 2
+  switchBraille1 = digitalRead(switchPin);
+  if (switchBraille1 == HIGH) {
+    braille1 = true;
+  }
+  else if (switchBraille1 == LOW) {
+    braille1 = false;
+  }
 }
 
 void loop() {
   uint32_t t;
   bool SW1_high;
   t = millis();
-
+  
 //if (t >= debounce_time + DEBOUNCE_INTERVAL) {
 //  SW1_high = digitalRead(buttonPin) == HIGH; 
 //  if (SW1_went_back_low && SW1_high) {
