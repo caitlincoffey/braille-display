@@ -61,7 +61,9 @@ void setup() {
 //  timer = millis();
 //  debounce_time = timer;
   SW1_went_back_low=true;
+}
 
+bool gradeOfBraille() {
   // Braille 1 vs. Braille 2
   switchBraille1 = digitalRead(switchPin);
   if (switchBraille1 == HIGH) {
@@ -69,6 +71,18 @@ void setup() {
   }
   else if (switchBraille1 == LOW) {
     braille1 = false;
+  }
+  
+ return braille1
+}
+
+void sendGradeToPython(braille1) {
+  // TODO check if send button was pressed in python
+  if (braille1 == True) {
+    Serial.println(2);
+  }
+  if (braille1 == False) {
+    Serial.println(3);
   }
 }
 
@@ -93,9 +107,15 @@ void loop() {
 //  debounce_time = t;
 //  }
 
+
 if (pause == false) {
   // CODE THAT GOES BRRRR
+  
+  braille1 = gradeofBraille();
+  sendGradeToPython(braille1);
+  
   belt.step(stepsToCell); //move to next cell
+  
   recvWithStartEndMarkers(); //receive next character
     
   moveServos();
