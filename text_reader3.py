@@ -22,7 +22,7 @@ class textReader:
         """
         text
         """
-        self.text = text #TODO button # reads the whole file, does not read by line. will result in one giant string. also converts chars to lowercase.
+        #self.text = text #TODO button # reads the whole file, does not read by line. will result in one giant string. also converts chars to lowercase.
         self.all_maps = []
         # Taken from example code provided by PIE Teaching Team
         # https://github.com/bminch/PIE/blob/main/Serial_cmd.py
@@ -48,6 +48,9 @@ class textReader:
                 self.edev = None
                 self.connected = False
     
+    def add_raw_text(self, text):
+        self.text = text
+
     def convert(self, grade=1):
         """
         Convert text to braille (grade 1 or grade 2)
@@ -122,23 +125,23 @@ class textReader:
         return msg.decode()
 
 
-if __name__ == "__main__":
-    test_reader = textReader('Testing 123')
-    time.sleep(2)
+# if __name__ == "__main__":
+#     test_reader = textReader('Testing 123')
+#     time.sleep(2)
     
-    # reading text and converting to braille
-    # TODO check if either braille 1 or braille 2 (from physical input on braille display)
-    # if braille 1: use our code
-    # if braille 2: use existing open source code
+#     # reading text and converting to braille
+#     # TODO check if either braille 1 or braille 2 (from physical input on braille display)
+#     # if braille 1: use our code
+#     # if braille 2: use existing open source code
 
-    test_reader.convert(2)
-    print(test_reader.all_maps)
+#     test_reader.convert(2)
+#     print(test_reader.all_maps)
     
-    # Sending data to arduino
-    for ind in range(0, len(test_reader.all_maps)):
-        #time.sleep(1)
-        #print("We got here")
-        test_reader.send_to_arduino(test_reader.all_maps, ind) # send it to arduino
-        print("Sent to arduino")
-        while "1" not in test_reader.recvFromArduino():
-            pass
+#     # Sending data to arduino
+#     for ind in range(0, len(test_reader.all_maps)):
+#         #time.sleep(1)
+#         #print("We got here")
+#         test_reader.send_to_arduino(test_reader.all_maps, ind) # send it to arduino
+#         print("Sent to arduino")
+#         while "1" not in test_reader.recvFromArduino():
+#             pass

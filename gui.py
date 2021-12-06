@@ -1,5 +1,7 @@
 """
 GUI for Braille Display
+
+TODO: Have python read in what grade arduino sent
 """
 
 import tkinter as tk
@@ -15,18 +17,21 @@ uploadedFile = False
 filename = ""
 grade = 1
 
+startMarker = '<'
+endMarker = '>'
+
 def sendToArduino(reader):
     """
     takes reader object
     """
     global grade 
 
-    time.sleep(2) 
+    #time.sleep(2) 
     # BEFORE THE REST OF THIS CODE, CHECK BRAILLE1 VS BRAILLE2
     # TODO figure out if recvFromArduino is smart, does it send this now or do we have to store that info
-    if "2" in self.recvFromArduino():
+    if "2" in reader.recvFromArduino():
         grade = 1
-    elif "3" in self.recvFromArduino():
+    elif "3" in reader.recvFromArduino():
         grade = 2
 
     reader.convert(grade)
@@ -42,22 +47,38 @@ def sendToArduino(reader):
 
     print("All sent to Arduino")
 
-def send(event=None):
+def send(event=None): #Hit button "Send to Braille Display"
     global uploadedFile
     global filename
     
+    global startMarker, endMarker
+
+    reader = txt.textReader()
+    time.sleep(2)
+    cmd = "grade".encode()
+    stringWithMarkers = (startMarker)
+    cmd = cmd.decode("utf-8")
+    stringWithMarkers += cmd
+    stringWithMarkers += (endMarker)
+    print("sending: ", stringWithMarkers.encode('utf-8'))
+    reader.dev.write(stringWithMarkers.encode('utf-8'))
+
+
+
     if uploadedFile == True:
         with open(filename, 'r') as f:
             print("File selected:", filename)
             text = f.read() # reads the whole file, does not read by line. will result in one giant string. also converts chars to lowercase.
             print(text)
-            reader = txt.textReader(text)
+            #reader = txt.textReader(text)
+            reader.add_raw_text(text)
             sendToArduino(reader)
 
 
     else:
         text = textExample.get("1.0", "end-1c")
-        reader = txt.textReader(text)
+        #reader = txt.textReader(text)
+        reader.add_raw_text(text)
         sendToArduino(reader)
     
 

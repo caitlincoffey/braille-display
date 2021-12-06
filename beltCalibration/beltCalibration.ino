@@ -27,9 +27,9 @@ void setup() {
   cam2.attach(5);  // listens to pin 5
   cam3.attach(6);  // listens to pin 6
   // hit left most pin, 30
-  cam1.write(80); // 80 , 40 left most
+  cam1.write(40); // 80 , 40 left most
   cam2.write(0);
-  cam3.write(90); //100 , 140 right most
+  cam3.write(140); //100 , 140 right most
 }
 
 void loop() {
