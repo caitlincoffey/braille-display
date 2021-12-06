@@ -73,15 +73,15 @@ bool gradeOfBraille() {
     braille1 = false;
   }
   
- return braille1
+ return braille1;
 }
 
-void sendGradeToPython(braille1) {
+void sendGradeToPython(bool braille1) {
   // TODO check if send button was pressed in python
-  if (braille1 == True) {
+  if (braille1 == true) {
     Serial.println(2);
   }
-  if (braille1 == False) {
+  if (braille1 == false) {
     Serial.println(3);
   }
 }
@@ -111,7 +111,7 @@ void loop() {
 if (pause == false) {
   // CODE THAT GOES BRRRR
   
-  braille1 = gradeofBraille();
+  braille1 = gradeOfBraille();
   sendGradeToPython(braille1);
   
   belt.step(stepsToCell); //move to next cell
