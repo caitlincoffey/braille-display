@@ -35,7 +35,7 @@ class textReader:
                     try:
                         self.dev = serial.Serial(device.device, 115200)
                         self.connected = True
-                        print('Connected to {!s}...'.format(device.device))
+                        #print('Connected to {!s}...'.format(device.device))
                     except:
                         pass
                 if self.connected:
@@ -58,7 +58,7 @@ class textReader:
 
         if grade == 2:
             raw_maps = brl.translate(self.text)
-            print(raw_maps)
+            #print(raw_maps)
             for list in raw_maps:
                 #add a space bc new word
                 self.all_maps.append([(0, 0), (0, 0), (0, 0)])
@@ -99,8 +99,8 @@ class textReader:
                 # this will take up two cells, TODO
                 mapping = conversions.mapping_punct2[char.lower()]
                 # send things to arduino...
-            else:
-                print("Error: could not read char %s" % char)
+            #else:
+                #print("Error: could not read char %s" % char)
                 # TODO this is picking up new lines, should those be written in as just spaces?
             
             self.all_maps.append(mapping)
@@ -114,7 +114,7 @@ class textReader:
         cmd = cmd.decode("utf-8")
         stringWithMarkers += cmd
         stringWithMarkers += (endMarker)
-        print("sending: ", stringWithMarkers.encode('utf-8'))
+        #print("sending: ", stringWithMarkers.encode('utf-8'))
         self.dev.write(stringWithMarkers.encode('utf-8'))
     
     def recvFromArduino(self):

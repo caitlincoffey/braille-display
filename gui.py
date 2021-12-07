@@ -41,17 +41,17 @@ def sendToArduino(reader):
     #     grade = 2
 
     reader.convert(grade)
-    print(reader.all_maps)
+    #print(reader.all_maps)
     for ind in range(0, len(reader.all_maps)):
-        print("In %s character of loop" % str(ind))
+        #print("In %s character of loop" % str(ind))
 
         reader.send_to_arduino(reader.all_maps, ind) # send it to arduino
-        print("Sent to arduino")
+        #print("Sent to arduino")
         #print('Received from arduino', reader.recvFromArduino())
         while "1" not in reader.recvFromArduino():
             pass
 
-    print("All sent to Arduino")
+    #print("All sent to Arduino")
 
 def send(event=None): #Hit button "Send to Braille Display"
     global uploadedFile
@@ -67,14 +67,15 @@ def send(event=None): #Hit button "Send to Braille Display"
     cmd = cmd.decode("utf-8")
     stringWithMarkers += cmd
     stringWithMarkers += (endMarker)
-    print("sending: ", stringWithMarkers.encode('utf-8'))
+    #print("sending: ", stringWithMarkers.encode('utf-8'))
     reader.dev.write(stringWithMarkers.encode('utf-8'))
     gradeRaw = reader.recvFromArduino()
     if "3" in gradeRaw:
         grade = 2
-        print("Grade 2 braille")
+        #print("Grade 2 braille")
     else:
-        print("Grade 1 braille")
+        grade = 1
+        #print("Grade 1 braille")
 
     # gradesFromArduno = {"2", "3"}
     # while True:
@@ -86,9 +87,9 @@ def send(event=None): #Hit button "Send to Braille Display"
 
     if uploadedFile == True:
         with open(filename, 'r') as f:
-            print("File selected:", filename)
+            #print("File selected:", filename)
             text = f.read() # reads the whole file, does not read by line. will result in one giant string. also converts chars to lowercase.
-            print(text)
+            #print(text)
             #reader = txt.textReader(text)
             reader.add_raw_text(text)
             sendToArduino(reader)

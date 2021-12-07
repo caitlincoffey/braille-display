@@ -27,7 +27,7 @@ Servo cam3;
 const int stepsPerRevolution = 3200*4; // microstepping 1/16
 const int dirPin = 12;
 const int stepPin = 11;
-const int stepsToCell = 1000; //TODO determine actual value using beltCalibration program, stepsToCell == n
+const int stepsToCell = 1100; //TODO determine actual value using beltCalibration program, stepsToCell == n
 Stepper belt = Stepper(stepsPerRevolution, stepPin, dirPin);
 
 
@@ -93,7 +93,7 @@ if (pause == false) {
   if (receivedChars[0] == 'g' && receivedChars[1] == 'r' && receivedChars[2] == 'a' && receivedChars[3] == 'd' && receivedChars[4] == 'e' && started == false) { //send braille 1 or braille 2 python
     braille1 = gradeOfBraille();
     sendGradeToPython(braille1);
-    delay(5000);
+    delay(500);
     Serial.println("1");
     started = true;
   }
@@ -102,7 +102,6 @@ if (pause == false) {
     delay(2000); // could be lower
     replyToPython();
     belt.step(stepsToCell); //move to next cell
-
   }
   
   }
