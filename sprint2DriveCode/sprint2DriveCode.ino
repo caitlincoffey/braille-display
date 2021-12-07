@@ -97,7 +97,7 @@ if (pause == false) {
     Serial.println("1");
     started = true;
   }
-  else if (started == true) {
+  else if (started == true and newData == true) {
     moveServos();
     delay(2000); // could be lower
     replyToPython();

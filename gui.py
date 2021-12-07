@@ -69,8 +69,12 @@ def send(event=None): #Hit button "Send to Braille Display"
     stringWithMarkers += (endMarker)
     print("sending: ", stringWithMarkers.encode('utf-8'))
     reader.dev.write(stringWithMarkers.encode('utf-8'))
-    grade = reader.recvFromArduino()
-    print(grade)
+    gradeRaw = reader.recvFromArduino()
+    if "3" in gradeRaw:
+        grade = 2
+        print("Grade 2 braille")
+    else:
+        print("Grade 1 braille")
 
     # gradesFromArduno = {"2", "3"}
     # while True:
