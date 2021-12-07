@@ -18,7 +18,7 @@ class textReader:
                    (0x2A03, 0x0043), (0x2341, 0x0243), 
                    (0x0403, 0x6001), (0x1A86, 0x7523))
 
-    def __init__(self, text, port=''):
+    def __init__(self, port=''):
         """
         text
         """

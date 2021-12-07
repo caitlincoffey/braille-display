@@ -29,13 +29,19 @@ def sendToArduino(reader):
     #time.sleep(2) 
     # BEFORE THE REST OF THIS CODE, CHECK BRAILLE1 VS BRAILLE2
     # TODO figure out if recvFromArduino is smart, does it send this now or do we have to store that info
-    if "2" in reader.recvFromArduino():
-        grade = 1
-    elif "3" in reader.recvFromArduino():
-        grade = 2
+
+    # # tell arduino to send grade of braille by sending 'grade'
+
+
+    # # read grade of braille from arduino
+    # grade_read = reader.recvFromArduino()
+    # if "2" in grade_read:
+    #     grade = 1
+    # elif "3" in grade_read:
+    #     grade = 2
 
     reader.convert(grade)
-
+    print(reader.all_maps)
     for ind in range(0, len(reader.all_maps)):
         print("In %s character of loop" % str(ind))
 
@@ -50,11 +56,12 @@ def sendToArduino(reader):
 def send(event=None): #Hit button "Send to Braille Display"
     global uploadedFile
     global filename
-    
+    global grade
     global startMarker, endMarker
 
     reader = txt.textReader()
     time.sleep(2)
+    # tell arduino to send grade of braille
     cmd = "grade".encode()
     stringWithMarkers = (startMarker)
     cmd = cmd.decode("utf-8")
@@ -62,8 +69,16 @@ def send(event=None): #Hit button "Send to Braille Display"
     stringWithMarkers += (endMarker)
     print("sending: ", stringWithMarkers.encode('utf-8'))
     reader.dev.write(stringWithMarkers.encode('utf-8'))
+    grade = reader.recvFromArduino()
+    print(grade)
 
-
+    # gradesFromArduno = {"2", "3"}
+    # while True:
+    #     grade_recv = reader.recvFromArduino()
+    #     print(grade_recv)
+    #     if grade_recv in gradesFromArduno:
+    #         grade = grade_recv
+    #         break
 
     if uploadedFile == True:
         with open(filename, 'r') as f:

@@ -43,7 +43,7 @@ int z = 0;
 const byte numChars = 64;
 char receivedChars[numChars];
 boolean newData = false;
-
+bool started = false;
 void setup() {
   // put your setup code here, to run once:
   //Serial.begin(57600);
@@ -61,29 +61,6 @@ void setup() {
 //  timer = millis();
 //  debounce_time = timer;
   SW1_went_back_low=true;
-}
-
-bool gradeOfBraille() {
-  // Braille 1 vs. Braille 2
-  switchBraille1 = digitalRead(switchPin);
-  if (switchBraille1 == HIGH) {
-    braille1 = true;
-  }
-  else if (switchBraille1 == LOW) {
-    braille1 = false;
-  }
-  
- return braille1;
-}
-
-void sendGradeToPython(bool braille1) {
-  // TODO check if send button was pressed in python
-  if (braille1 == true) {
-    Serial.println(2);
-  }
-  if (braille1 == false) {
-    Serial.println(3);
-  }
 }
 
 void loop() {
@@ -111,17 +88,23 @@ void loop() {
 if (pause == false) {
   // CODE THAT GOES BRRRR
   
-  braille1 = gradeOfBraille();
-  sendGradeToPython(braille1);
-  
-  belt.step(stepsToCell); //move to next cell
   
   recvWithStartEndMarkers(); //receive next character
-    
-  moveServos();
-      
-  delay(2000); // could be lower
-  replyToPython();
+  if (receivedChars[0] == 'g' && receivedChars[1] == 'r' && receivedChars[2] == 'a' && receivedChars[3] == 'd' && receivedChars[4] == 'e' && started == false) { //send braille 1 or braille 2 python
+    braille1 = gradeOfBraille();
+    sendGradeToPython(braille1);
+    delay(5000);
+    Serial.println("1");
+    started = true;
+  }
+  else if (started == true) {
+    moveServos();
+    delay(2000); // could be lower
+    replyToPython();
+    belt.step(stepsToCell); //move to next cell
+
+  }
+  
   }
 }
 
@@ -207,5 +190,28 @@ void replyToPython() {
   if (newData == true) {
     Serial.println("1");
     newData = false;
+  }
+}
+
+bool gradeOfBraille() {
+  // Braille 1 vs. Braille 2
+  switchBraille1 = digitalRead(switchPin);
+  if (switchBraille1 == LOW) {
+    braille1 = true;
+  }
+  else if (switchBraille1 == HIGH) {
+    braille1 = false;
+  }
+  
+ return braille1;
+}
+
+void sendGradeToPython(bool braille1) {
+  // TODO check if send button was pressed in python
+  if (braille1 == true) {
+    Serial.println(2);
+  }
+  if (braille1 == false) {
+    Serial.println(3);
   }
 }
