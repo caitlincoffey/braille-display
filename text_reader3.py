@@ -35,7 +35,7 @@ class textReader:
                     try:
                         self.dev = serial.Serial(device.device, 115200)
                         self.connected = True
-                        #print('Connected to {!s}...'.format(device.device))
+                        print('Connected to {!s}...'.format(device.device))
                     except:
                         pass
                 if self.connected:

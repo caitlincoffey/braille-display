@@ -41,7 +41,7 @@ def sendToArduino(reader):
     #     grade = 2
 
     reader.convert(grade)
-    #print(reader.all_maps)
+    print(reader.all_maps)
     for ind in range(0, len(reader.all_maps)):
         #print("In %s character of loop" % str(ind))
 
@@ -51,7 +51,7 @@ def sendToArduino(reader):
         while "1" not in reader.recvFromArduino():
             pass
 
-    #print("All sent to Arduino")
+    print("All sent to Arduino")
 
 def send(event=None): #Hit button "Send to Braille Display"
     global uploadedFile
