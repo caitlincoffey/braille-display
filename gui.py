@@ -9,7 +9,7 @@ import time
 
 root = tk.Tk()
 root.title("Braille Display GUI")
-root.geometry("1000x800")
+root.geometry("1000x600")
 
 uploadedFile = False
 filename = ""
@@ -82,13 +82,10 @@ textLabel = tk.Label(root, text="Enter text in textbox below:", font=("Arial", 2
 textLabel.pack()
 
 textExample = tk.Text(root,
-                      height=10, width=50, font=("Arial", 16))
+                      height=5, width=50, font=("Arial", 16))
 textExample.pack()
 
-space = tk.Label(root, text="", pady=5)
-space.pack()
-
-space = tk.Label(root, text="Or", font=("Arial", 20), pady=20)
+space = tk.Label(root, text="Or", font=("Arial", 20), pady=10)
 space.pack()
 
 btnFile = tk.Button(root,
@@ -98,7 +95,7 @@ btnFile = tk.Button(root,
                    command=lambda:uploadFile())
 btnFile.pack()
 
-space = tk.Label(root, text="", pady=20)
+space = tk.Label(root, text="", pady=10)
 space.pack()
 
 btnSet = tk.Button(root,
@@ -108,7 +105,7 @@ btnSet = tk.Button(root,
                    command=lambda:send())
 btnSet.pack()
 
-space = tk.Label(root, text="", pady=20)
+space = tk.Label(root, text="", pady=10)
 space.pack()
 
 quit = tk.Button(root, height=2,
