@@ -35,13 +35,13 @@ void setup() {
 //  cam3.write(100); //100 , 140 right most
   //NOTES
   //FLAT: cam1: 80, cam2: 90, cam3: 100
-  makeCamsFlat();
+  //makeCamsFlat();
   //cam1.write(45);
 //  cam2.write(145);
-  delay(3000);
-  bothPinsUp();
-  delay(2000);
-  bothPinsUp2();
+  //delay(3000);
+  //bothPinsUp();
+  //delay(2000);
+  //bothPinsUp2();
 }
 
 void makeCamsFlat() {

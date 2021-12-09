@@ -20,9 +20,8 @@ class textReader:
 
     def __init__(self, port=''):
         """
-        text
+        Connects to Arduino, listens on Serial 115200 by default
         """
-        #self.text = text #TODO button # reads the whole file, does not read by line. will result in one giant string. also converts chars to lowercase.
         self.all_maps = []
         # Taken from example code provided by PIE Teaching Team
         # https://github.com/bminch/PIE/blob/main/Serial_cmd.py
@@ -55,15 +54,13 @@ class textReader:
         """
         Convert text to braille (grade 1 or grade 2)
         """
-
         if grade == 2:
             raw_maps = brl.translate(self.text)
-            #print(raw_maps)
             for list in raw_maps:
-                #add a space bc new word
                 self.all_maps.append([(0, 0), (0, 0), (0, 0)])
                 for char in list:
                     self.all_maps.append(self.char_to_tuple(char))
+            # removing first space
             self.all_maps.pop(0)
         else:
             self.convert_grade1()
@@ -73,13 +70,11 @@ class textReader:
         
     def convert_grade1(self):
         """
-        Reads text and converts text to braille
+        Reads text and converts text to braille.
+        Adds mappings to a list, mapping is a length-6 tuple.
         """
-        #TODO add this to pybrl.py for better organizing?
         for char in self.text: 
-            #bad way for now, add all mappings to a list. TODO make better way to read --> send
             if char.isupper(): # if character is uppercase
-                #TODO deal with all caps edge case, if whole word is caps it's two dots
                 mapping = conversions.mappings_alpha_num['cap']
                 self.all_maps.append(mapping)
 
@@ -87,26 +82,21 @@ class textReader:
                 mapping = conversions.mappings_alpha_num['num']
                 self.all_maps.append(mapping)
                 
-            # we can do braille conversions here
             if char.lower() in conversions.mappings_punct:
                 mapping = conversions.mappings_punct[char.lower()]
 
             elif char.lower() in conversions.mappings_alpha_num:
                 mapping = conversions.mappings_alpha_num[char.lower()]
-                # send things to arduino...
 
             elif char.lower() in conversions.mappings_punct2:
-                # this will take up two cells, TODO
-                mapping = conversions.mapping_punct2[char.lower()]
-                # send things to arduino...
-            #else:
-                #print("Error: could not read char %s" % char)
-                # TODO this is picking up new lines, should those be written in as just spaces?
+                mapping = conversions.mappings_punct2[char.lower()]
             
             self.all_maps.append(mapping)
 
     def send_to_arduino(self, mapping, ind):
-
+        """
+        Procedure for sending information to Arduino
+        """
         global startMarker, endMarker
 
         cmd = "".join((conversions.b_to_ard[mapping[ind][0]], conversions.b_to_ard[mapping[ind][1]], conversions.b_to_ard[mapping[ind][2]])).encode()
@@ -114,34 +104,13 @@ class textReader:
         cmd = cmd.decode("utf-8")
         stringWithMarkers += cmd
         stringWithMarkers += (endMarker)
-        #print("sending: ", stringWithMarkers.encode('utf-8'))
         self.dev.write(stringWithMarkers.encode('utf-8'))
     
     def recvFromArduino(self):
+        """
+        Procedure for receiving information from Arduino
+        """
         global startMarker, endMarker, dataStarted, dataBuf, messageComplete
 
         msg = self.dev.read_until() # read until a new line
-        #mystring = msg.decode()  # decode n return 
         return msg.decode()
-
-
-# if __name__ == "__main__":
-#     test_reader = textReader('Testing 123')
-#     time.sleep(2)
-    
-#     # reading text and converting to braille
-#     # TODO check if either braille 1 or braille 2 (from physical input on braille display)
-#     # if braille 1: use our code
-#     # if braille 2: use existing open source code
-
-#     test_reader.convert(2)
-#     print(test_reader.all_maps)
-    
-#     # Sending data to arduino
-#     for ind in range(0, len(test_reader.all_maps)):
-#         #time.sleep(1)
-#         #print("We got here")
-#         test_reader.send_to_arduino(test_reader.all_maps, ind) # send it to arduino
-#         print("Sent to arduino")
-#         while "1" not in test_reader.recvFromArduino():
-#             pass

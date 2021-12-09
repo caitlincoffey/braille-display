@@ -4,15 +4,7 @@
 #include <Stepper.h>
 #include <Wire.h>
 
-// Defining play/pause button info
-const int buttonPin = 2;     // the number of the pushbutton pin
-const uint16_t DEBOUNCE_INTERVAL = 10;
-uint32_t debounce_time;
-bool SW1_went_back_low;
-int buttonState = 0;         // variable for reading the pushbutton status
-bool pause = false;
-
-// Braille 1/2 switch
+// Braille 1 or 2 switch
 const int switchPin = A0;
 int switchBraille1 = 0;
 bool braille1 = true;
@@ -29,23 +21,20 @@ const int stepPin = 11;
 const int stepsToCell = 1100; //TODO determine actual value using beltCalibration program, stepsToCell == n
 Stepper belt = Stepper(stepsPerRevolution, stepPin, dirPin);
 
-
 //Defining cam positions
-//TODO Check and edit these
 int A = 90; //0 0, 165 is start (right most) and 120 is end (left most)
 int B = 180; //1 1
 int C = 175; //0 1
 int D = 110; //1 0
-int z = 0;
 
 //defining for 2-way communication
 const byte numChars = 64;
 char receivedChars[numChars];
 boolean newData = false;
 bool started = false;
+
 void setup() {
   // put your setup code here, to run once:
-  //Serial.begin(57600);
   Serial.begin(115200);
 
   // attaching servos
@@ -54,60 +43,29 @@ void setup() {
   cam3.attach(6);  // listens to pin 11
 
   // setting speed of stepper motor for belt
-  belt.setSpeed(10); //TODO determine speed
-
-  // Button info / timing
-//  timer = millis();
-//  debounce_time = timer;
-  SW1_went_back_low=true;
+  belt.setSpeed(20); //could be 10 for safety
 }
 
 void loop() {
-  uint32_t t;
-  bool SW1_high;
-  t = millis();
-  
-//if (t >= debounce_time + DEBOUNCE_INTERVAL) {
-//  SW1_high = digitalRead(buttonPin) == HIGH; 
-//  if (SW1_went_back_low && SW1_high) {
-//    // Whatever we want when we press the button!
-//    Serial.println("Button press");
-//    pause = !pause;
-//    SW1_went_back_low = false;
-//  }
-//    
-//  else if (!SW1_went_back_low && !SW1_high) {
-//    // TODO figure out if this is default case
-//    SW1_went_back_low = true;
-//  }
-//  debounce_time = t;
-//  }
-
-
-if (pause == false) {
-  // CODE THAT GOES BRRRR
-  
-  
-  recvWithStartEndMarkers(); //receive next character
+  recvWithStartEndMarkers(); //receive next character from Python
   if (receivedChars[0] == 'g' && receivedChars[1] == 'r' && receivedChars[2] == 'a' && receivedChars[3] == 'd' && receivedChars[4] == 'e' && started == false) { //send braille 1 or braille 2 python
     braille1 = gradeOfBraille();
     sendGradeToPython(braille1);
     delay(500);
     Serial.println("1");
+    // Only send this code during start
     started = true;
   }
   else if (started == true and newData == true) {
     moveServos();
-    delay(2000); // could be lower
+    delay(2000); // Arbirtrary pause for cams, anything greater than 3 sec is overkill
     replyToPython();
     belt.step(stepsToCell); //move to next cell
-  }
-  
   }
 }
 
 void moveServos() {
-    //move the servos
+  //move the servos to position for cells
   switch (receivedChars[0]) {
     case 'A':
       cam1.write(145);
@@ -198,14 +156,13 @@ bool gradeOfBraille() {
     braille1 = true;
   }
   else if (switchBraille1 == HIGH) {
-    braille1 = false;
+    braille1 = false; // braille 2
   }
-  
  return braille1;
 }
 
 void sendGradeToPython(bool braille1) {
-  // TODO check if send button was pressed in python
+  // Checks grade and sends data to Python
   if (braille1 == true) {
     Serial.println(2);
   }

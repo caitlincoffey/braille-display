@@ -1,11 +1,12 @@
 """
-Contains the text reader object
+OLD TEXT READER OBJECT, FOR ARCHIVE PURPOSES ONLY
+
+Used in Sprint 1 + Sprint 2
 """
 import letterToDots as conversions
 import serial
 import serial.tools.list_ports as list_ports
 import time
-#import binascii
 import pybrl as brl
 
 startMarker = '<'
