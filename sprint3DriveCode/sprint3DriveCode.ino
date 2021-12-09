@@ -16,16 +16,16 @@ Servo cam3;
 
 // Defining stepper motor info
 const int stepsPerRevolution = 3200*4; // microstepping 1/16
-const int dirPin = 12;
-const int stepPin = 11;
-const int stepsToCell = 1100; //TODO determine actual value using beltCalibration program, stepsToCell == n
+const int dirPin = 8;
+const int stepPin = 10;
+const int stepsToCell = -1100; //TODO determine actual value using beltCalibration program, stepsToCell == n
 Stepper belt = Stepper(stepsPerRevolution, stepPin, dirPin);
 
 //Defining cam positions
-int A = 90; //0 0, 165 is start (right most) and 120 is end (left most)
-int B = 180; //1 1
-int C = 175; //0 1
-int D = 110; //1 0
+//A = 0 0, neutral
+//B = 1 1, 
+//C = 0 1
+//D = 1 0
 
 //defining for 2-way communication
 const byte numChars = 64;
@@ -38,9 +38,9 @@ void setup() {
   Serial.begin(115200);
 
   // attaching servos
-  cam1.attach(3);  // listens to pin 9
-  cam2.attach(5);  // listens to pin 10
-  cam3.attach(6);  // listens to pin 11
+  cam1.attach(3);  // listens to pin 3
+  cam2.attach(5);  // listens to pin 5
+  cam3.attach(6);  // listens to pin 6
 
   // setting speed of stepper motor for belt
   belt.setSpeed(20); //could be 10 for safety
@@ -64,48 +64,87 @@ void loop() {
   }
 }
 
+void moveNeutral(int cam) {
+  switch (cam) {
+    case 1: // cam 1
+      cam1.write(72);
+      break;
+    case 2: // cam 2
+      cam2.write(80);
+      break;
+    case 3: // cam 3
+      cam3.write(90);
+      break; 
+  }
+}
+
 void moveServos() {
   //move the servos to position for cells
   switch (receivedChars[0]) {
     case 'A':
-      cam1.write(145);
+      moveNeutral(1);
       break;
     case 'B':
-      cam1.write(180);
+      cam1.write(150);
+      delay(2000);
+      moveNeutral(1);
       break;
     case 'C':
-      cam1.write(175);
+      cam1.write(70 + 60);
+      delay(2000);
+      moveNeutral(1);
       break;
     case 'D':
-      cam1.write(110);
+      cam1.write(25);
+      delay(2000);
+      moveNeutral(1);
+      break;
   }
 
   switch (receivedChars[1]) {
     case 'A':
-      cam2.write(145);
+      moveNeutral(2);
       break;
     case 'B':
-      cam2.write(180);
+      cam2.write(90-52);
+      delay(2000);
+      cam2.write(90 + 60);
+      delay(2000);
+      moveNeutral(2);
       break;
     case 'C':
-      cam2.write(175);
+      cam2.write(90 + 60);
+      delay(2000);
+      moveNeutral(2);
       break;
     case 'D':
-      cam2.write(110);
+      cam2.write(90 - 52);
+      delay(2000);
+      moveNeutral(2);
+      break;
   }
 
   switch (receivedChars[2]) {
     case 'A':
-      cam3.write(145);
+      moveNeutral(3);
       break;
     case 'B':
-      cam3.write(180);
+      cam3.write(100 - 52);
+      delay(2000);
+      cam3.write(90 + 60);
+      delay(2000);
+      moveNeutral(3);
       break;
     case 'C':
-      cam3.write(175);
+      cam3.write(90 + 60);
+      delay(2000);
+      moveNeutral(3);
       break;
     case 'D':
-      cam3.write(110);
+      cam3.write(100 - 52);
+      delay(2000);
+      moveNeutral(3);
+      break;
   }
 }
 
