@@ -60,6 +60,10 @@ void loop() {
     moveServos();
     delay(2000); // Arbirtrary pause for cams, anything greater than 3 sec is overkill
     replyToPython();
+    moveNeutral(1);
+    moveNeutral(2);
+    moveNeutral(3);
+    delay(500);
     belt.step(stepsToCell); //move to next cell
   }
 }
@@ -80,70 +84,70 @@ void moveNeutral(int cam) {
 
 void moveServos() {
   //move the servos to position for cells
-  switch (receivedChars[0]) {
-    case 'A':
-      moveNeutral(1);
+  switch (receivedChars[2]) {
+    case 'A': // 0 0 
+      //moveNeutral(1);
       break;
-    case 'B':
+    case 'B': // 1 1 
       cam1.write(150);
       delay(2000);
-      moveNeutral(1);
+      //moveNeutral(1);
       break;
-    case 'C':
+    case 'D': // 1 0 
       cam1.write(70 + 60);
-      delay(2000);
-      moveNeutral(1);
+      //delay(2000);
+      //moveNeutral(1);
       break;
-    case 'D':
+    case 'C': // 0 1
       cam1.write(25);
-      delay(2000);
-      moveNeutral(1);
+      //delay(2000);
+      //moveNeutral(1);
       break;
   }
 
   switch (receivedChars[1]) {
-    case 'A':
-      moveNeutral(2);
+    case 'A': // 0 0
+      //moveNeutral(2);
       break;
-    case 'B':
+    case 'B': // 1 1
       cam2.write(90-52);
       delay(2000);
       cam2.write(90 + 60);
-      delay(2000);
-      moveNeutral(2);
+      //delay(2000);
+      //moveNeutral(2);
       break;
-    case 'C':
+    case 'D': // 1 0
       cam2.write(90 + 60);
-      delay(2000);
-      moveNeutral(2);
+      //delay(2000);
+      //moveNeutral(2);
       break;
-    case 'D':
+    case 'C': // 0 1
       cam2.write(90 - 52);
-      delay(2000);
-      moveNeutral(2);
+      //delay(2000);
+      //moveNeutral(2);
       break;
   }
 
-  switch (receivedChars[2]) {
-    case 'A':
-      moveNeutral(3);
+  switch (receivedChars[0]) {
+    case 'A': // 0 0
+      //moveNeutral(3);
       break;
-    case 'B':
+    case 'B': // 1 1
       cam3.write(100 - 52);
       delay(2000);
       cam3.write(90 + 60);
-      delay(2000);
-      moveNeutral(3);
+      //delay(2000);
+      //moveNeutral(3);
       break;
-    case 'C':
+    case 'D': // 1 0
       cam3.write(90 + 60);
-      delay(2000);
-      moveNeutral(3);
+      //delay(2000);
+      //moveNeutral(3);
       break;
-    case 'D':
+    case 'C': // 0 1
       cam3.write(100 - 52);
-      delay(2000);
-      moveNeutral(3);
+      //delay(2000);
+      //moveNeutral(3);
       break;
   }
 }
