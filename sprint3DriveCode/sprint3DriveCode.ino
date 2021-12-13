@@ -71,13 +71,13 @@ void loop() {
 void moveNeutral(int cam) {
   switch (cam) {
     case 1: // cam 1
-      cam1.write(72);
+      cam1.write(75);
       break;
     case 2: // cam 2
-      cam2.write(80);
+      cam2.write(75);
       break;
     case 3: // cam 3
-      cam3.write(90);
+      cam3.write(93);
       break; 
   }
 }
@@ -89,17 +89,19 @@ void moveServos() {
       //moveNeutral(1);
       break;
     case 'B': // 1 1 
-      cam1.write(150);
+      //cam1.write(150);
+      cam1.write(140); //leftPinUp
       delay(2000);
+      cam1.write(40); //rightPinUp
       //moveNeutral(1);
       break;
     case 'D': // 1 0 
-      cam1.write(70 + 60);
+      cam1.write(140);
       //delay(2000);
       //moveNeutral(1);
       break;
     case 'C': // 0 1
-      cam1.write(25);
+      cam1.write(40);
       //delay(2000);
       //moveNeutral(1);
       break;
@@ -110,19 +112,19 @@ void moveServos() {
       //moveNeutral(2);
       break;
     case 'B': // 1 1
-      cam2.write(90-52);
+      cam2.write(140); //leftPinUp
       delay(2000);
-      cam2.write(90 + 60);
+      cam2.write(60); //rightPinUp
       //delay(2000);
       //moveNeutral(2);
       break;
     case 'D': // 1 0
-      cam2.write(90 + 60);
+      cam2.write(140);
       //delay(2000);
       //moveNeutral(2);
       break;
     case 'C': // 0 1
-      cam2.write(90 - 52);
+      cam2.write(60);
       //delay(2000);
       //moveNeutral(2);
       break;
@@ -133,19 +135,19 @@ void moveServos() {
       //moveNeutral(3);
       break;
     case 'B': // 1 1
-      cam3.write(100 - 52);
+      cam3.write(140); //leftPinUp
       delay(2000);
-      cam3.write(90 + 60);
+      cam3.write(60); //rightPinUp
       //delay(2000);
       //moveNeutral(3);
       break;
     case 'D': // 1 0
-      cam3.write(90 + 60);
+      cam3.write(140);
       //delay(2000);
       //moveNeutral(3);
       break;
     case 'C': // 0 1
-      cam3.write(100 - 52);
+      cam3.write(60);
       //delay(2000);
       //moveNeutral(3);
       break;

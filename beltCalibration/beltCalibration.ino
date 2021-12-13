@@ -9,7 +9,7 @@ Servo cam2;
 Servo cam3;
 
 // Defining stepper motor info
-const int stepsPerRevolution = 3200*4; // microstepping 1/16
+const int stepsPerRevolution  = 3200*4; // microstepping 1/16
 const int dirPin = 8;
 const int stepPin = 10;
 int num_steps = 0;
@@ -36,25 +36,40 @@ void setup() {
   //NOTES
   //FLAT: cam1: 80, cam2: 90, cam3: 100
   makeCamsFlat();
-//  delay(3000);
-  //rightPinsUp();
-//  delay(3000);
+  
+delay(1000);
+rightPinsUp();
+  delay(2000);
+ leftPinsUp();
+ delay(2000);
+//  
+makeCamsFlat();
 //  bothPinsUp();
 //  delay(2000);
 //  bothPinsUp2();
 }
 
 void makeCamsFlat() {
-  cam1.write(72); //
-  cam2.write(80); // was 90
-  cam3.write(90); // was 100
+  cam1.write(75); //
+  cam2.write(75); // was 90
+  cam3.write(93); // was 100
 }
 
-void leftPinsUp() {
+void rightPinsUp() {
   //cam1.write(170); // WAS 25
-  cam1.write(25);
-  cam2.write(90 - 52);
-  cam3.write(100 - 52); //100 , 140 right most
+//  cam1.write(25);
+//  cam2.write(30);
+//  cam3.write(35);
+// 
+  cam1.write(40);
+  cam2.write(60);
+  cam3.write(60);
+//
+//cam1.write(45);
+//cam2.write(65);
+//cam3.write(65);
+//  cam2.write(90 - 52);
+//  cam3.write(100 - 52); //100 , 140 right most
 }
 
 void bothPinsUp() {
@@ -71,16 +86,22 @@ void bothPinsUp2() {
   cam3.write(90+60);
 }
 
-void rightPinsUp() {
-  cam1.write(70 + 60); // 80 , 40 left most
-  cam2.write(90 + 60);
-  cam3.write(90 + 60); //100 , 140 right most
+void leftPinsUp() {
+//  cam1.write(70 + 60); //13- // 80 , 40 left most
+//  cam2.write(180); //150
+//  cam3.write(90 + 60); //150  //100 , 140 right most
+
+  cam1.write(140);
+  cam2.write(140);
+  cam3.write(140);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //leftPinsUp();
-  //rightPinsUp();
+  //makeCamsFlat();
+//  leftPinsUp();
+//  rightPinsUp();
+  //makeCamsFlat();
    if (Serial.available()) {
     inKeyboard = Serial.read();
     switch (inKeyboard) { //determine appropiate function to run based on input
